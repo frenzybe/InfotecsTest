@@ -1,0 +1,15 @@
+bin/
+obj/
+
+appsettings.Development.json
+*.user
+*.suo
+
+.idea/
+.vscode/
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+*.log

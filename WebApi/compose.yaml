@@ -1,0 +1,33 @@
+﻿version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: timescale_db
+    environment:
+      POSTGRES_DB: TimescaleDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: timescale_api
+    environment:
+      # Переопределяем строку подключения для работы внутри Docker-сети
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=TimescaleDb;Username=postgres;Password=postgres"
+      ASPNETCORE_URLS: "http://+:8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
